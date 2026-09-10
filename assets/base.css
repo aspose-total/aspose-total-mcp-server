@@ -1,0 +1,570 @@
+/* base.css — generated from design-tokens.yml. Edit tokens, not this file, when possible. */
+
+/* Self-hosted fonts (v1.0.2 visual refresh) — no external CDN dependency,
+   no render-blocking third-party request, same principle as v1.0.1.
+   Archivo Black & Space Grotesk are SIL OFL 1.1 (see fonts/ARCHIVOBLACK-
+   LICENSE.txt / SPACEGROTESK-LICENSE.txt); Geist Mono (code only, unchanged
+   from v1.0.1) is SIL OFL 1.1 too (fonts/GEIST-LICENSE.txt).
+   Archivo Black is a single-weight display face (usWeightClass 400 in the
+   file itself — the "black" look is the letterforms, not a weight axis) —
+   font-weight: 400, never 700/900, or it either has no effect or triggers
+   an unwanted synthetic-bold overlay. Space Grotesk is variable (wght
+   300-700), covering the 400/500/700 this theme actually uses. */
+@font-face {
+  font-family: 'Archivo Black';
+  src: url('fonts/ArchivoBlack-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('fonts/SpaceGrotesk-Variable.woff2') format('woff2-variations'),
+       url('fonts/SpaceGrotesk-Variable.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('fonts/GeistMono-Variable.woff2') format('woff2-variations'),
+       url('fonts/GeistMono-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --paper: #FFFFFF;        /* v1.0.2: page background — white, per feedback (was the given oklch(93% 0.02 250) bluish tint) */
+  --paper-raised: #DEE9F5; /* v1.0.2: cards/panels — bluish, per feedback (swapped with --paper's original value) */
+  --ink: #1E252E;
+  --ink-soft: #454E58;
+  --ink-faint: #5E6771;   /* v1.0.2: derived + measured, 4.67:1 on paper (not given explicitly) */
+  --wire: #006ABA;        /* v1.0.2: darkened from the given #0086D8 (oklch 60% 0.16 245), which
+                              only reached 3.16:1 as link text and 3.62:1 as its own button text —
+                              both fail WCAG AA 4.5:1. Same hue/chroma at oklch(51% 0.16 245). */
+  --wire-soft: #DBEEFE;
+  --wire-ink: #F4F7FC;    /* v1.0.2: text on wire (CTA button fill) — given directly */
+  --signal: #D9A02C;      /* v1.0.2: secondary accent — tags/badges only, sparingly */
+  --signal-ink: #492300;  /* v1.0.2: text on signal (badges) — given directly */
+  --signal-soft: #FCE4C4; /* v1.0.2: light amber tint for badge-chip backgrounds */
+  --line: #CAD2DB;
+  --success: #4F8F6C;     /* unchanged — outside the given palette's scope */
+  --focus-ring: #1E252E;  /* same as ink, max-contrast, matches v1.0.1's approach */
+  --line-strong: #7A848F; /* v1.0.2: control borders need 3:1; --line is decorative only */
+  --code-bg: #091018;
+  --code-text: #D9DFE5;
+
+  --font-display: 'Archivo Black', 'Inter', system-ui, sans-serif;
+  --font-label: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --font-body: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'SFMono-Regular', monospace;
+
+  --max-width: 1100px;
+  --gutter: 24px;
+  --radius-card: 16px;   /* v1.0.2: 10px -> 16px, a more generous "elevated card" rounding */
+  --radius-pill: 999px;
+  --shadow-card: 0 1px 2px rgba(30, 37, 46, 0.04), 0 4px 12px rgba(30, 37, 46, 0.06); /* v1.0.2: new */
+  --unit: 8px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  /* v1.0.1: inherited site-wide rather than patched per-selector (h1 got
+     its own overflow-wrap when this was first found — see h1 rule below —
+     but the same unbreakable-long-product-name overflow also hits the
+     footer's product-link list and the product page's "Official {name}"
+     button, neither of which is h1. Found for real by Sprint 6's visual
+     regression check running against a fixture with a deliberately very
+     long product name — first time Layer 2's overflow check ever ran
+     against this fixture. Setting it here, since overflow-wrap inherits,
+     covers those and any future case without hunting selector by selector. */
+  overflow-wrap: break-word;
+}
+
+img, svg { max-width: 100%; display: block; }
+a { color: var(--wire); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible, button:focus-visible, summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Skip link — lets keyboard users bypass the sticky header on every page (v1.0.1) */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--ink);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 0 0 var(--radius-card) 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.skip-link:focus {
+  left: 0;
+  text-decoration: none;
+}
+
+.wrap {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* v1.0.2: h1 alone uses the display face (Archivo Black is single-weight —
+   "the heavy slab display font" is the letterforms themselves, weight 400
+   not a bold cut). h2/h3 moved to font-body (Space Grotesk) at a bold
+   weight instead of staying grouped with h1 — Archivo Black's one heavy
+   weight reads as overwhelming repeated at subheading sizes; a judgment
+   call, since the brief said "headline" (singular) vs. "everything else"
+   without specifying h2/h3 either way. */
+h1, h2, h3 {
+  color: var(--ink);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.5em;
+}
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.75rem, 6vw, 4.25rem);
+  overflow-wrap: break-word;
+}
+h1 .accent, .hero .accent {
+  font-weight: 400;
+  color: var(--wire);
+}
+h2 { font-family: var(--font-body); font-weight: 700; font-size: 1.85rem; margin-top: 3rem; letter-spacing: -0.02em; }
+h3 { font-family: var(--font-body); font-weight: 600; font-size: 1.15rem; letter-spacing: -0.01em; }
+p { color: var(--ink-soft); margin: 0 0 1em; font-size: 1.02rem; line-height: 1.65; }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wire);
+  display: inline-block;
+  margin-bottom: 0.85rem;
+}
+
+/* ---------- Header ---------- */
+/* v1.0.2: header dark, per feedback — same --code-bg/--code-text/--signal-
+   on-dark pattern already established for .pipeline. */
+.site-header {
+  border-bottom: 1px solid var(--line-strong);
+  background: var(--code-bg);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.site-header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--code-text);
+}
+
+.main-nav { display: flex; gap: 28px; }
+.main-nav a {
+  color: var(--code-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.main-nav a:hover { color: var(--signal); text-decoration: none; }
+.icon-link { display: inline-flex; align-items: center; }
+.icon-link svg { display: block; }
+@media (max-width: 480px) {
+  /* v1.0.1: nav previously overflowed horizontally below ~400px (a real
+     browser-only finding — Layer 1's static checks can't see viewport
+     overflow). Wraps onto a second row instead of forcing the whole page
+     wider than the viewport. */
+  .site-header .wrap { flex-wrap: wrap; height: auto; padding-top: 12px; padding-bottom: 12px; row-gap: 10px; }
+  .main-nav { flex-wrap: wrap; gap: 10px 18px; }
+}
+
+.btn {
+  display: inline-flex;
+  /* min-width: 0 alone isn't enough here (unlike .footer-col/.crosslinks
+     a): .btn's raw text content is itself an anonymous flex item inside
+     .btn (since .btn is also inline-flex), and min-width: 0 on .btn only
+     controls how .btn shrinks within ITS parent (.hero-actions), not how
+     that inner anonymous item behaves. With no explicit upper bound, .btn
+     just grows to fit the unbroken text instead of wrapping it. max-width
+     gives it something to actually shrink against. */
+  min-width: 0;
+  max-width: 100%;
+  word-break: break-word;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.btn-primary { background: var(--ink); color: #fff; }
+.btn-primary:hover { background: #000; text-decoration: none; }
+.btn-accent { background: var(--wire); color: var(--wire-ink); } /* v1.0.2: solid indigo primary-accent fill, per the brief */
+.btn-accent:hover { background: #0055A3; text-decoration: none; } /* v1.0.2: darkened wire, oklch(44% 0.16 245) */
+.btn-outline { border-color: var(--line-strong); color: var(--ink); background: transparent; }
+.btn-outline:hover { border-color: var(--ink); text-decoration: none; }
+
+/* ---------- Hero ---------- */
+.hero { padding: 72px 0 48px; }
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
+}
+@media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; } }
+.hero-actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+.hero-meta {
+  display: flex; gap: 18px; margin-top: 24px; flex-wrap: wrap;
+  font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-faint);
+}
+
+/* Pipeline diagram signature */
+/* v1.0.2: outer container dark, per feedback — reuses --code-bg/--code-text
+   (the existing dark-inverted-surface pair) rather than inventing new
+   tokens. .pipeline-node chips keep their own light --wire-soft background
+   (set below), so they don't need color changes — they already sit on
+   their own light surface regardless of what's behind them. Only the
+   eyebrow label and the trailing paragraph sit directly on the dark
+   outer background and needed color fixes (see .pipeline .eyebrow below
+   and the inline styles in hub.html.j2/central_hub.html.j2) — the
+   default --wire (indigo) eyebrow color only reaches 3.43:1 on
+   --code-bg, below the 4.5:1 this project measures everything against;
+   --signal (amber) reaches 8.2:1 there instead. */
+.pipeline { background: var(--code-bg); border: 1px solid var(--line-strong); border-radius: var(--radius-card); padding: 28px; box-shadow: var(--shadow-card); }
+.pipeline .eyebrow { color: var(--signal); }
+.pipeline-row { display: flex; align-items: center; justify-content: space-between; }
+.pipeline-node {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-align: center;
+  color: var(--ink);
+  background: var(--wire-soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 8px;
+  width: 22%;
+}
+.pipeline-wire { flex: 1; height: 2px; position: relative; margin: 0 4px; background: var(--line); }
+.pipeline-wire::before {
+  content: "";
+  position: absolute; top: -2px; left: 0;
+  width: 8px; height: 6px; border-radius: 3px;
+  background: var(--signal);
+  animation: flow var(--flow-duration, 2.4s) linear infinite;
+}
+@keyframes flow { from { left: -8px; } to { left: 100%; } }
+@media (prefers-reduced-motion: reduce) { .pipeline-wire::before { animation: none; left: 45%; } }
+
+/* ---------- Section ---------- */
+.section { padding: 48px 0; }
+.section-lead { max-width: 640px; }
+
+/* ---------- Product grid ("port" cards) ---------- */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+}
+.port-card {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 20px;
+  position: relative;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.port-card::before {
+  content: "";
+  position: absolute;
+  top: 18px; right: 18px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+}
+.port-card:hover {
+  border-color: var(--wire);
+  transform: translateY(-2px);
+  text-decoration: none;
+  box-shadow: 0 2px 4px rgba(30, 37, 46, 0.06), 0 8px 20px rgba(30, 37, 46, 0.09); /* v1.0.2: deepens on lift */
+}
+.port-card-planned {
+  /* v1.0.1: was `opacity: 0.6` — uniformly fading the card also faded its
+     already-AA-compliant text/badge colors below 4.5:1 (a real browser+
+     axe-core finding; static per-token contrast checks can't see an
+     opacity multiplier applied at render time). v1.0.2 replaced the old
+     "Coming soon" badge with a translucent full-card overlay (below)
+     instead — per feedback, dark enough to read as "filtered/disabled"
+     while still leaving the name/description/badges legible underneath,
+     not opaque.
+
+     This overlay repeats the same class of risk the v1.0.1 note above
+     describes, one level worse: axe-core's automated color-contrast rule
+     checks each element's own computed style against its DOM ancestor's
+     background — it has no way to know a *separate, later, visually
+     overlapping* sibling element sits on top of it and tints the actual
+     rendered pixels. It reported no issue here, but that's a blind spot,
+     not a clean bill of health. Verified by hand instead: compositing
+     rgba(9,16,24, alpha) over each token pair (ink/ink-soft on
+     paper-raised, and — the actual tightest constraint — the small
+     .fmt-badge pills' own signal/signal-ink pair, still visible under the
+     tint) and computing real WCAG contrast on the blended result. At
+     alpha 0.55 (the initial value) the badges dropped to ~2.4:1; even at
+     0.25 they were still only ~4.0:1. 0.15 keeps every pair at 4.5:1+
+     (badges ~4.75:1, the tightest of the three) with real margin. The
+     "Coming soon" pill itself is unaffected either way — it's an opaque
+     child of the overlay, not blended with it.
+  */
+  cursor: default;
+  overflow: hidden;
+}
+.port-card-planned:hover { transform: none; border-color: var(--line); }
+.port-card-planned::before { background: var(--ink-faint); }
+.coming-soon-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(9, 16, 24, 0.15); /* --code-bg at 15% — see the measured-contrast note above before raising this */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.coming-soon-overlay span {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--signal);
+  color: var(--signal-ink);
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+}
+.port-formats { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.fmt-badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill); /* v1.0.2: 4px -> full pill, matching the reference badge style */
+  background: var(--signal); /* v1.0.2: darkened from --signal-soft to solid amber, per feedback — matches the reference badge's solid fill */
+  color: var(--signal-ink);
+  border: none; /* v1.0.2: a solid-fill pill badge doesn't need one, matching the reference */
+}
+.port-card h3 { margin-bottom: 4px; font-size: 1.2rem; }
+.port-card p { font-size: 0.88rem; margin-bottom: 0; }
+/* v1.0.2: hub.html.j2's product cards moved .port-formats after h3/p (was
+   first) so every card's heading aligns at the same height regardless of
+   how many format tags a product has — per feedback. central_hub.html.j2's
+   platform cards were given the same h3/p/.port-formats order for the same
+   reason, so this rule now applies to both. */
+.port-card p + .port-formats { margin-top: 12px; margin-bottom: 0; }
+
+/* ---------- Code blocks / tabs ---------- */
+.code-tabs { border: 1px solid var(--line); border-radius: var(--radius-card); overflow: hidden; background: var(--paper-raised); margin: 16px 0; }
+.code-tab-labels { display: flex; border-bottom: 1px solid var(--line); background: var(--paper); }
+.code-tab-labels button {
+  font-family: var(--font-mono); font-size: 0.78rem; padding: 10px 16px;
+  background: none; border: none; cursor: pointer; color: var(--ink-faint);
+  border-bottom: 2px solid transparent;
+}
+.code-tab-labels button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--signal); }
+/* v1.0.1: state now driven by aria-selected, so the accessible state and the
+   visible state cannot drift apart — there is only one source of truth. */
+pre {
+  margin: 0; padding: 18px; overflow-x: auto;
+  background: var(--code-bg); color: var(--code-text);
+  font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.6;
+}
+.code-tab-panel[hidden] { display: none; }
+.code-tab-panel { display: block; }
+
+/* ---------- FAQ ---------- */
+.faq-item {
+  border-bottom: 1px solid var(--line);
+  padding: 18px 0;
+}
+.faq-item summary {
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.02rem;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after { content: "+"; color: var(--wire); font-size: 1.3rem; }
+.faq-item[open] summary::after { content: "–"; }
+.faq-item p { margin-top: 12px; }
+
+/* ---------- Breadcrumb ---------- */
+.breadcrumb {
+  font-size: 0.85rem; color: var(--ink-faint);
+  padding: 20px 0 0;
+  font-family: var(--font-mono);
+}
+.breadcrumb a { color: var(--ink-faint); }
+.breadcrumb a:hover { color: var(--wire); }
+
+/* ---------- Table ---------- */
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
+th { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-faint); }
+
+/* v1.0.3: per-tool example-prompt rows under the "Available tools" table
+   (one row per prompt variant) — reads as secondary detail under its
+   tool's row, not another tool entry. --ink-faint is already measured at
+   4.67:1 on --paper (see the token definition above), so no new contrast
+   check was needed. */
+.tool-prompt-row td { padding-top: 2px; font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-faint); }
+
+/* ---------- Cross-links ---------- */
+.crosslinks { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.crosslinks a {
+  /* Same flex-item min-width: auto default as .footer-col/.btn — each
+     link is a .crosslinks flex item and won't shrink below its own
+     unbroken product-name text otherwise. */
+  min-width: 0;
+  font-family: var(--font-mono); font-size: 0.78rem;
+  padding: 6px 12px; border: 1px solid var(--line); border-radius: var(--radius-pill);
+  color: var(--ink-soft);
+}
+.crosslinks a:hover { border-color: var(--wire); color: var(--wire); text-decoration: none; }
+
+/* ---------- Footer ---------- */
+/* v1.0.2: footer dark, per feedback — same --code-bg/--code-text/--signal-
+   on-dark pattern as .site-header/.pipeline. */
+.site-footer {
+  border-top: 1px solid var(--line-strong);
+  margin-top: 64px;
+  padding: 40px 0;
+  background: var(--code-bg);
+}
+/* v1.0.2: grid, not flex-wrap — flex-wrap distributed 3 columns unevenly
+   at in-between viewport widths (e.g. 2 columns on one row, the 3rd
+   wrapping alone onto its own), since wrapping only depends on each
+   item's own intrinsic width, not a fixed column count. A grid gives an
+   explicit, deterministic column count at every width: 3 even columns
+   above the breakpoint, a single stacked column below it. */
+.footer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+/* min-width: 0 still needed — grid items default to min-width: auto too,
+   same unbroken-content-width problem flex items have (see product-grid's
+   .port-card/.crosslinks notes above). */
+.footer-col { min-width: 0; }
+.footer-col h3 {
+  font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--signal); margin-bottom: 10px;
+}
+.footer-col a { display: block; color: var(--code-text); font-size: 0.88rem; margin-bottom: 6px; }
+.footer-col a:hover { color: var(--signal); }
+.license-note {
+  margin: 24px 0 0;
+  font-size: 0.8rem;
+  color: var(--code-text);
+  opacity: 0.85;
+}
+.footer-bottom {
+  margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line-strong);
+  font-size: 0.8rem; color: var(--code-text);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+}
+.footer-bottom a { color: var(--code-text); margin-left: 8px; }
+.footer-bottom a:hover { color: var(--signal); }
+
+/* ---------- Cloud catalog (Aspose.Cloud MCP servers, Sprint 18) ---------- */
+/* v1.0.3: cloud_hub.html.j2's product-grid cards stay clickable for every
+   product, including placeholders (unlike central_hub.html.j2's
+   .port-card-planned, which is deliberately non-interactive) — so a
+   placeholder needs its "coming soon" status as a small corner badge
+   instead of central_hub's full-card overlay, which would make the card
+   read as disabled. Removes .port-card's live-status dot (::before) so
+   the badge is the only status indicator, not a second, conflicting one. */
+.port-card-coming-soon::before { content: none; }
+/* Inline, not absolutely positioned — a first attempt pinned this to the
+   card's top-right corner, which overlapped/clipped longer product names
+   (e.g. "Aspose.Words Cloud") on narrower grid columns; reserving padding
+   for it instead squeezed the heading enough to force an awkward mid-word
+   wrap. Flowing inline right after the title text, like a second word,
+   sidesteps both — found for real via rendered screenshots at a couple of
+   viewport widths, not assumed from the CSS alone. */
+.badge-coming-soon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--signal);
+  color: var(--signal-ink);
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+/* Thin strip above the sticky header, QA only (family.robots_indexable ==
+   false) — so a QA build is never visually indistinguishable from prod,
+   on top of the noindex meta/robots.txt that already keep it out of
+   search results. */
+.env-banner {
+  background: var(--signal);
+  color: var(--signal-ink);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 8px 16px;
+}
+
+/* Full-section "coming soon" banner on a placeholder product page — same
+   dark-surface language as .pipeline/.site-header/.site-footer, reused
+   here as a plain centered announcement rather than a diagram. */
+.coming-soon-banner {
+  background: var(--code-bg);
+  color: var(--code-text);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-card);
+  padding: 32px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+.coming-soon-banner .eyebrow { color: var(--signal); }
+.coming-soon-banner h2 { color: #fff; margin-bottom: 0.4em; }
+.coming-soon-banner p { color: var(--code-text); margin-bottom: 0; }
